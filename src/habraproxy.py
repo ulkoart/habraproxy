@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from flask import Flask
 
 HOST = '127.0.0.1'
@@ -44,11 +44,11 @@ def root_query(path):
     soup = BeautifulSoup(response, 'html.parser')
     content = soup.findAll(text=True)
     for item in content:
-        if item.parent.name not in BAD_TAGS:
+        if item.parent.name not in BAD_TAGS and not isinstance(item,Comment):
             replace_result = replace_it(item)
             item.replaceWith(replace_result)
     return soup.prettify()
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host=HOST, port=PORT)
+    app.run(debug=True, host=HOST, port=PORT)
