@@ -24,11 +24,13 @@ def is_not_number(str):
 
 def replace_it(item):
     words = item.split()
+    replace_flag = False
     for position, word in enumerate(words):
-        clean_word = html.unescape(word.strip('.,:!?@#$%^*()_-'))
+        clean_word = word.strip('.,:!?@#$%^*()_-')
         if len(clean_word) == 6 and is_not_number(word):
             words[position] = word.replace(clean_word, clean_word + "\u2122")
-    return ' '.join(words)
+            replace_flag = True
+    return replace_flag, ' '.join(words)
 
 
 @app.route('/', defaults={'path': ''})
@@ -48,8 +50,10 @@ def root_query(path):
     for item in content:
         if item.parent.name not in BAD_TAGS and not isinstance(item,Comment):
             replace_result = replace_it(item)
-            item.replaceWith(replace_result)
-    return html.unescape(soup.prettify())
+            if replace_result[0]:
+                item.replaceWith(replace_result[1])
+
+    return html.unescape(soup.prettify()) 
 
 
 if __name__ == '__main__':
