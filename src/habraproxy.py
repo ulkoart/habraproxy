@@ -23,7 +23,7 @@ def is_not_number(str):
 def replace_it(item):
     words = item.split()
     for position, word in enumerate(words):
-        clean_word = word.strip('.,:!@#$%^&*()_-')
+        clean_word = word.strip('.,:!?@#$%^&*()_-')
         if len(clean_word) == 6 and is_not_number(word):
             words[position] = word.replace(clean_word, clean_word + "\u2122")
     return ' '.join(words)
