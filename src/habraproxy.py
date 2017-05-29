@@ -1,3 +1,5 @@
+import html
+
 import requests
 from bs4 import BeautifulSoup, Comment
 from flask import Flask
@@ -23,7 +25,7 @@ def is_not_number(str):
 def replace_it(item):
     words = item.split()
     for position, word in enumerate(words):
-        clean_word = word.strip('.,:!?@#$%^&*()_-')
+        clean_word = html.unescape(word.strip('.,:!?@#$%^*()_-'))
         if len(clean_word) == 6 and is_not_number(word):
             words[position] = word.replace(clean_word, clean_word + "\u2122")
     return ' '.join(words)
@@ -47,7 +49,7 @@ def root_query(path):
         if item.parent.name not in BAD_TAGS and not isinstance(item,Comment):
             replace_result = replace_it(item)
             item.replaceWith(replace_result)
-    return soup.prettify()
+    return html.unescape(soup.prettify())
 
 
 if __name__ == '__main__':
