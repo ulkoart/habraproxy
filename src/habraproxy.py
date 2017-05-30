@@ -25,13 +25,14 @@ def is_not_number(str):
 def replace_it(item, separator=' '):
     words = item.split(separator)
     for position, word in enumerate(words):
-        clean_word = word.strip('.,:!?@#$%^*()_-').strip()
+        clean_word = word.replace('\xa0', ' ').strip()
+        clean_word = clean_word.strip('\'"«».,:!?@#$%^*()_-;[]')
         if '/' in clean_word:
             replace_with_slash = replace_it(clean_word, separator='/')
             words[position] = word.replace(clean_word, replace_with_slash)
-        if len(clean_word) == 6 and is_not_number(word):
+        elif len(clean_word) == 6 and is_not_number(word):
             words[position] = word.replace(clean_word, clean_word + "\u2122")
-    return separator.join(words)
+    return html.unescape(separator.join(words))
 
 
 @app.route('/', defaults={'path': ''})
@@ -52,7 +53,7 @@ def root_query(path):
         if item.parent.name not in BAD_TAGS and not isinstance(item,Comment):
             replace_result = replace_it(item)
             item.replaceWith(replace_result)
-    return html.unescape(str(soup)) 
+    return str(soup)
 
 
 if __name__ == '__main__':
