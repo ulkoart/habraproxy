@@ -25,7 +25,7 @@ def is_not_number(str):
 def replace_it(item, separator=' '):
     words = item.split(separator)
     for position, word in enumerate(words):
-        clean_word = word.strip('.,:!?@#$%^*()_-')
+        clean_word = word.strip('.,:!?@#$%^*()_-').strip()
         if '/' in clean_word:
             replace_with_slash = replace_it(clean_word, separator='/')
             words[position] = word.replace(clean_word, replace_with_slash)
